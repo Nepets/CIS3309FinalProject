@@ -35,7 +35,7 @@ namespace CIS3309F21FP
 		public int OnHandQuantity {
 			get; set;
 		}
-		public  override string ToString() => this.Code + "|" + this.Description + "|$" + string.Format("{0:#.00}",this.Price) + "|" + this.OnHandQuantity; 
+		public  override string ToString() => this.Code + " " + this.Description + " $" + string.Format("{0:#.00}",this.Price) + " " + this.OnHandQuantity; 
 	}
 	
 }

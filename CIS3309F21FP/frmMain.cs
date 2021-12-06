@@ -9,8 +9,8 @@ namespace CIS3309F21FP
         Customer c;
         Product p;
         ProductList pl;
-        //Invoice i;
-        //InvoiceLineItem li;
+        Invoice i;
+        InvoiceLineItem li;
 
         public frmMain()
         {
@@ -39,9 +39,11 @@ namespace CIS3309F21FP
 
             // Instantiate the Invoice
             //*****Invoice 1. Add code here
-            
+            i = new Invoice();
+
             // Set Invoice CustomerID to -1 (Means no Customer for Invoice)
             //*****Invoice 2. Add code here
+            i.CustomerID = -1;
             
             // Set contents of Cart TextBoxes to Zeros (Actually gets zeros from Invoice)
             SetCartTextBoxes();
@@ -58,6 +60,7 @@ namespace CIS3309F21FP
 
             // Clear invoice
             //*****Invoice 3. Add code here
+            i.Clear();
             
             // Clear lstCart
             lstCart.Items.Clear();
@@ -97,6 +100,7 @@ namespace CIS3309F21FP
 
                     // Copy CustomerID to Invoice CustomerID
                     //*****Invoice 4. Add code here
+                    i.CustomerID = c.CustomerID;
                     
                 }
                 else
@@ -144,7 +148,8 @@ namespace CIS3309F21FP
                 txtCustomerID.Text = maxID.ToString();
                 // Copy CustomerID to Invoice CustomerID
                 //*****Invoice 5. Add code here
-                
+                i.CustomerID = c.CustomerID;
+
             }
         }
 
@@ -157,6 +162,7 @@ namespace CIS3309F21FP
             ClearCustomerTextBoxes();
             // Set Invoice CustomerID to -1 (Means no Customer for Invoice)
             //*****Invoice 6. Add code here
+            i.CustomerID = -1;
             
         }
 
@@ -249,7 +255,7 @@ namespace CIS3309F21FP
             //*****Product 4. Add code here
             txtProductCode.Text = p.Code;
             txtDescription.Text = p.Description;
-            txtUnitPrice.Text = p.Price.ToString();
+            txtUnitPrice.Text = p.Price.ToString("C");
             txtOnHandQuantity.Text = p.OnHandQuantity.ToString();
             txtQuantityToPurchase.Text = "";
         }
@@ -264,6 +270,12 @@ namespace CIS3309F21FP
             // Declare a bool to check if Product with same ProductCode is in Cart
             bool inCart = false;
             //***** 7. Add code here
+            foreach (InvoiceLineItem li in lstCart.Items)
+            {
+                if (li.ProductCode == p.Code) { 
+                    inCart = true; 
+                }
+            }
 
 
 
@@ -271,21 +283,21 @@ namespace CIS3309F21FP
             // If previous conversion succeeded, cart item does not have more book than are in stock
             // and Product is not in Cart, add Product to Cart
             //*****Invoice 8. Add code here
-            if (true)
+            if (ok && qty < p.OnHandQuantity && !inCart)
             {
                 // Calculate cost of all items purchased for this Product (Get UnitPrice from p and qty from TryParse)
                 //*****Invoice 9. Add code here
-                
+                decimal totalCost = qty * p.Price;
                 // Instantiate a new InvoiceLineItem (enter -1 for CustomerID, get ProductCode and UnitPrice from p
                 // and qty from TryParse and tot)
                 //*****Invoice 10. Add code here
-                
+                li = new InvoiceLineItem(p.Code, p.Price, qty, totalCost);
                 // Add InvoiceLineItem to Invoice
                 //*****Invoice 11. Add code here
-                
+                i.Add(li);
                 // Add InvoiceLineItem to lstCart
                 //*****Invoice 12. Add code here
-                
+                lstCart.Items.Add(li);
                 // Set data from Invoice to Cart TextBoxes
                 SetCartTextBoxes();
                 // Enable Cart Buttons
@@ -327,17 +339,17 @@ namespace CIS3309F21FP
             if(dr == DialogResult.OK)
             {
                 // Copy Tag to selected index's element (Need to use an Indexer)
-                //lstCart.Items[lstCart.SelectedIndex] = (InvoiceLineItem)f.Tag;
+                lstCart.Items[lstCart.SelectedIndex] = (InvoiceLineItem)f.Tag;
 
                 // Copy Tag to li
                 //*****InvoiceLineItem 4. Add code here
-                
+                li = (InvoiceLineItem)f.Tag;
                 // Copy li to selected index's element (Need to use an Indexer)
                 //*****InvoiceLineItem 5. Add code here
-                
+                lstCart.Items[lstCart.SelectedIndex] = li;
                 // Call UpdateInvoiceLineItem in i to pass new values for lstCart selected index
                 //*****Invoice 13. Add code here
-                //i.UpdateInvoiceLineItem(lstCart.SelectedIndex, li.UnitPrice, li.Quantity);
+                i.UpdateInvoiceLineItem(lstCart.SelectedIndex, li.Price, li.Quantity);
                 // Set data from Invoice to Cart TextBoxes
                 SetCartTextBoxes();
             }
@@ -349,7 +361,7 @@ namespace CIS3309F21FP
         {
             // Delete Product from Invoice SelectedIndex
             //*****Invoice 14. Add code here
-            
+            i.RemoveAt(lstCart.SelectedIndex);
             // Delete Product from lstCart
             lstCart.Items.RemoveAt(lstCart.SelectedIndex);
             // If Cart is empty, disable Cart Buttons
@@ -365,7 +377,7 @@ namespace CIS3309F21FP
         {
             // Clear Invoice
             //*****Invoice 15. Add code here
-            
+            i.Clear();
             // Clear lstCart
             lstCart.Items.Clear();
             // Disable Cart Buttons
@@ -380,7 +392,7 @@ namespace CIS3309F21FP
         {
             // Check to see if a Customer has been found or added (If CustomerID is -1 -> no Customer)
             //*****Invoice 16. Add code here
-            if (true)
+            if (i.CustomerID == -1)
             {
                 MessageBox.Show("Please add or find a customer.");
                 return;
@@ -389,7 +401,7 @@ namespace CIS3309F21FP
             {
                 // Insert Invoice to DB
                 //*****Invoice 17. Add code here
-                
+                InvoiceDB.InsertInvoice(i);
                 // Reset form to initial state
                 ResetForm();
             }
@@ -411,7 +423,11 @@ namespace CIS3309F21FP
         {
             // Set data in form
             //*****Invoice 18. Add code here
-            
+            txtProductTotal.Text = i.ProductTotal.ToString("C");
+            txtShipping.Text = i.Shipping.ToString("C");
+            txtSalesTax.Text = i.SalesTax.ToString("C");
+            txtInvoiceTotal.Text = i.InvoiceTotal.ToString("C");
+
 
 
 

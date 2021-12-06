@@ -19,5 +19,10 @@ namespace CIS3309F21FP
         public decimal SalesTaxRate { get; set; }
         public decimal FirstBookShipCharge { get; set; }
         public decimal AdditionalBookShipCharge { get; set; }
+
+        public override string ToString() => this.SalesTaxRate.ToString() + " "+this.FirstBookShipCharge+" "+ this.AdditionalBookShipCharge;
+        
+           
+        
     }
 }

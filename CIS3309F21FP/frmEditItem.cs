@@ -25,9 +25,11 @@ namespace CIS3309F21FP
         private void frmEditItem_Load(object sender, EventArgs e)
         {
             //*****InvoiceLineItem 1. Add code here
-
-
-
+            li = (InvoiceLineItem)this.Tag;
+            txtProductCode.Text = li.ProductCode;
+            txtItemTotal.Text = li.ItemTotal.ToString("C");
+            txtQuantity.Text = li.Quantity.ToString();
+            txtUnitPrice.Text = li.Price.ToString("C");
 
 
             txtProductCode.ReadOnly = true;
@@ -79,13 +81,13 @@ namespace CIS3309F21FP
             {
                 // Copy data to li
                 //*****InvoiceLineItem 2. Add code here
-                
-
-
+                li.Price = up;
+                li.Quantity = q;
 
                 // Copy total to txtItemTotal (li calculates it's own total)
                 //*****InvoiceLineItem 3. Add code here
-                
+                txtItemTotal.Text = (up * q).ToString("C");
+
             }
         }
     }
